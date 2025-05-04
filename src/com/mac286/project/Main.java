@@ -3,7 +3,7 @@ package com.mac286.project;
 import java.util.Vector;
 
 /*
-In this class you desing you main to test All stocks and
+In this class you tesing you main to test All stocks and
 ETFs
 1- create a Tester with the appropriate path and file name and risk factor
 2- Call run
@@ -15,7 +15,7 @@ public class Main {
         //If you are testing a risk based on stoploss and target
         int[] riskFactor = {1, 2, 3, 5, 10};
         //set path to appropriate path ("C:\ProfOmarMAC286\Spring2025_3076\Data")
-        String path = "C:\\ProfOmarMAC286\\Spring2025_3076\\Data";
+        String path = "/Users/seanyboy/Documents/IntellliJ/Class_Project/Data";
 
 
         //loop through your risk array and do the following
@@ -23,7 +23,7 @@ public class Main {
             //set file to appropriate file (stocks.txt)
             String fileName = "stocks.txt";
             // Create a Tester with with path file and riskFactor[i]
-
+            Tester stockTester = new Tester(path, fileName, riskFactor[i]);
             //Call run method on the tester
             // get the trades vector getTrades()
             Vector<Trade> stockTrades = stockTester.getTrades();
@@ -36,7 +36,7 @@ public class Main {
             fileName = "ETFs.txt";
             //do all exactely the same.
             //create a new Tester object for ETFs.
-
+            Tester etfTester = new Tester(path, fileName, riskFactor[i]);
             //run the tester
 
             Vector<Trade> etfTrades = etfTester.getTrades();

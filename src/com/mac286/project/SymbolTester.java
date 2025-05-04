@@ -82,7 +82,7 @@ public class SymbolTester {
          * 4- buy at open tomorrow and stop today's low and target factor*risk
          */
 
-        //TODO: Code your pattern here
+        //TODO: Code your pattern here !!!
 
         for(int i = 10; i <mData.size()-2; i++) {
             if(xDaysLow(i, 10)

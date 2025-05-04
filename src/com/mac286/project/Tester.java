@@ -31,6 +31,8 @@ public class Tester {
         //set risk to risk
         //opend the file and create a Vector of symbols. Using Helpers
         vSymbols = Helper.loadSymbols(mPath, mFile);
+        // Added Line to See if the vSymbols was working.
+        System.out.println(vSymbols);
     }
     public void setPath(String p){
         mPath = p;
