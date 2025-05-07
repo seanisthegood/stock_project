@@ -3,6 +3,7 @@ package com.mac286.project;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Vector;
 import java.io.FileReader;
 
@@ -45,11 +46,18 @@ public class Helper {
     public static Statistics computeStats(Vector<Trade> trades){
         //Create a Statistics object
         Statistics stat = new Statistics();
+
         //go through Vector trades one by one and compute all the Stats
         for(int i = 0; i < trades.size(); i++) {
             //compute all the stats
+//            System.out.println(trades.toString());
+//            trades.getTrades();
+//            System.out.println(trades.get(i).symbol);
+            if(Objects.equals(trades.get(i).symbol, "GE")) {
+                System.out.println(trades.get(i));
 
 
+            }
         }
         //return your object.
         return stat;

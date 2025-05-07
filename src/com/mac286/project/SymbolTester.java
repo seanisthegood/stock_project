@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class SymbolTester {
-    private int riskFactor; //TODO: Change this to suit your need
-    private String mSymbol;
-    private String dataPath; //= "C:\Users\oaith\Courses\MAC286\Fall2023\Data\";
+    public int riskFactor; //TODO: Change this to suit your need
+    public String mSymbol;
+    public String dataPath; //= "C:\Users\oaith\Courses\MAC286\Fall2023\Data\";
 
-    private Vector<Bar> mData;
-    private Vector<Trade> mTrades;
+    public Vector<Bar> mData;
+    public Vector<Trade> mTrades;
     private boolean loaded = false;
 
     //Tests one symbol for specific risk factor.
@@ -27,6 +27,7 @@ public class SymbolTester {
     public Vector<Trade> getTrades() {
         return mTrades;
     }
+//    public Vector<Bar> getBar() {return mData;}
     public void loadData() {
         //create file name
         String fileName = dataPath + mSymbol + "_Daily.csv";
@@ -109,6 +110,8 @@ public class SymbolTester {
 
                 Trade T = new Trade();
                 T.open(mSymbol, mData.elementAt(i+1).getDate(), entryprice, 0, 0, Direction.SHORT);
+//                T.close(mData.elementAt(i+riskFactor).getDate(), mData.elementAt(i+riskFactor).getClose(), riskFactor);
+//                T.close(mSymbol;mData.elementAt(i+2).getDate(),);
                 //close the trade as in long trade.
                 //add the trade to the Trade vector
                 mTrades.add(T);

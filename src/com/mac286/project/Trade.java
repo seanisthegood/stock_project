@@ -10,7 +10,7 @@ package com.mac286.project;
  HoldingPeriod how many day
  */
 public class Trade {
-    private String entryDate, exitDate, symbol;
+    public String entryDate, exitDate, symbol;
     private float entryPrice, exitPrice, stopLoss, Target;
     private Direction Dir;
     private int holdingPeriod;

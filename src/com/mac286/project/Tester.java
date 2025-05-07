@@ -18,21 +18,22 @@ is tested.
 if needed.
  */
 public class Tester {
-    private Vector<String> vSymbols;
-    private Vector<Trade> mTrades;
-    private String mPath, mFile;
-    private int mRisk;
+    public Vector<String> vSymbols;
+    public Vector<Trade> mTrades;
+    public String mPath, mFile;
+    public int mRisk;
     public Tester(String path, String file, int risk){
         //set path and file
         mPath = path;
         mFile = file;
         mRisk = risk;
         //create a vector of Trades
+        mTrades = new Vector<Trade>();
         //set risk to risk
         //opend the file and create a Vector of symbols. Using Helpers
         vSymbols = Helper.loadSymbols(mPath, mFile);
         // Added Line to See if the vSymbols was working.
-        System.out.println(vSymbols);
+//        System.out.println(vSymbols);
     }
     public void setPath(String p){
         mPath = p;
@@ -45,16 +46,46 @@ public class Tester {
         //if mTrades null create a new one.
         //go through the vSymbols, for each symbol,
         // create a symbol Tester with appropriate parameters
-        SymbolTester S = new SymbolTester("IBM", "C:/sdfasd/adadqa/", 1);
-        //Test the symbol (calling .test() method)
-        S.test();
-        //collect the trades by calling getTrades() method of the SymbolTester
-        mTrades.addAll(S.getTrades());
+        //Loop for the Symbols
+        for (String Symb: vSymbols) {
+
+
+            SymbolTester S = new SymbolTester(Symb,mPath,mRisk);
+//            System.out.println(S.riskFactor);
+//            System.out.println("------");
+//            System.out.println(Symb);
+//            System.out.println(S.mSymbol);
+            //Loop for the Symbols
+            //Test the symbol (calling .test() method)
+
+            S.test();
+
+//            System.out.println(S.mSymbol);
+//            System.out.println("----");
+//            System.out.println();
+//            System.out.println(S.mData
+//            System.out.println(mData.size());
+//            System.out.println("---------");
+//            System.out.println("Size Before Get Trades");
+//            System.out.println(mTrades.size());
+            //collect the trades by calling getTrades() method of the SymbolTester
+            mTrades.addAll(S.getTrades());
+//            System.out.println("---------");
+//
+//            System.out.println("Size After Get Trades");
+//            System.out.println(mTrades.size());
+
+        }
+//        System.out.print(S.size());
+//        System.out.print(mTrades);
         return true;
     }
     public Vector<Trade> getTrades(){
         return mTrades;
     }
+//    public Vector<Bar> getBars(){
+//        return mData;
+//    }
     public void reset(){
         vSymbols = null;
         mTrades = null;
