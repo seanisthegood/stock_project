@@ -40,6 +40,7 @@ public class SymbolTester {
                 //create a bar using the constructor that accepts the data as a String
                 Bar b = new Bar(line);
                 //add the bar to the Vector
+//                System.out.println(b);
                 mData.add(b);
             }
             loaded = true;
@@ -75,6 +76,7 @@ public class SymbolTester {
                 return false;
             }
         }
+
         //display the first 120 bars
         /*As an example let's test the following pattern
          * 1- today makes a 10 days low
@@ -85,8 +87,8 @@ public class SymbolTester {
 
         //TODO: Code your pattern here !!!
 
-        for(int i = 10; i <mData.size()-2; i++) {
-            if(xDaysLow(i, 10)
+        for(int i = 20; i <mData.size()-10; i++) {
+            if(xDaysLow(i, 20)
                     && mData.elementAt(i).getLow() < mData.elementAt(i-1).getLow()
                     && mData.elementAt(i).getHigh() > mData.elementAt(i-1).getHigh()
                     && (mData.elementAt(i).getHigh() - mData.elementAt(i).getClose())/(mData.elementAt(i).range()) < 0.1)
@@ -94,7 +96,7 @@ public class SymbolTester {
                 //we have a trade, buy at opne of i+1 (tomorrow) stoploss i.low, target = entry+factor*risk
                 float entryprice = mData.elementAt(i+1).getOpen();
                 Trade T = new Trade();
-                T.open(mSymbol, mData.elementAt(i+1).getDate(), entryprice, 0, 0, Direction.LONG);
+                T.open(mSymbol, mData.elementAt(i+1).getDate(), entryprice, mData.elementAt(i+1).getLow(), entryprice*riskFactor, Direction.LONG);
                 T.close(mData.elementAt(i+riskFactor).getDate(), mData.elementAt(i+riskFactor).getClose(), riskFactor);
                 //add the trade to the Trade vector
                 mTrades.add(T);

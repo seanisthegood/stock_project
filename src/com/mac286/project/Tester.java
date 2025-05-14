@@ -55,8 +55,8 @@ public class Tester {
 //            System.out.println("------");
 //            System.out.println(Symb);
 //            System.out.println(S.mSymbol);
-            //Loop for the Symbols
-            //Test the symbol (calling .test() method)
+//            Loop for the Symbols
+//            Test the symbol (calling .test() method)
 
             S.test();
 

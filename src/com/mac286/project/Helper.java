@@ -3,7 +3,6 @@ package com.mac286.project;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Vector;
 import java.io.FileReader;
 
@@ -15,14 +14,14 @@ public class Helper {
     public static Vector<String> loadSymbols(String path, String file) {
         //TODO: Create a Vector symbols
         Vector<String> V = new Vector<>();
-        String fileName = path + "/"+ file;
+        String fileName = path + "/" + file;
 
         try {
-            FileReader fr = new FileReader(fileName);
-            BufferedReader br = new BufferedReader(fr);
-            String line = br.readLine();
-            while ((line = br.readLine()) != null) {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line = reader.readLine();
+            while (line != null) {
                 V.add(line);
+                line = reader.readLine();
             }
 //
 
@@ -40,24 +39,90 @@ public class Helper {
         return V;
     }
 
-        //Write a Static method that accepts a Vector of Trades and goes
+    //Write a Static method that accepts a Vector of Trades and goes
     //through it to compute all statistics, return the statistics as
     //an object.
     public static Statistics computeStats(Vector<Trade> trades){
         //Create a Statistics object
         Statistics stat = new Statistics();
-
         //go through Vector trades one by one and compute all the Stats
-        for(int i = 0; i < trades.size(); i++) {
+        for(int i = 0; i <  trades.size(); i++) {
             //compute all the stats
-//            System.out.println(trades.toString());
-//            trades.getTrades();
-//            System.out.println(trades.get(i).symbol);
-            if(Objects.equals(trades.get(i).symbol, "GE")) {
-                System.out.println(trades.get(i));
 
+            // overall stats
+            double profitSum = 0.0;
+            double totalDays = 0.0;
+            int wins = 0;
 
+            // long and short stats
+            double profitSumLong = 0.0; // profit percentage for long trades
+            double sumDaysLong = 0.0; // total days held for the longs
+            int winsLong = 0; // how many longs are winners
+            int countLongs = 0; // total amount of long trades
+
+            double profitSumShort = 0.0; // profit percentage for short trades
+            double sumDaysShort = 0.0; // total days held for the short
+            int winsShort = 0; // how many shorts are winners
+            int countShort = 0; // total amount of shorts trades
+
+            // loop through every trade
+            for (Trade t : trades){
+                double profitPercentage = t.percentPL();
+                double daysHeld = t.getHoldingPeriod();
+
+                // update overall stats first to know what we're dealing with so that
+                // later we can assign them as long or shorts
+                profitSum += profitPercentage;
+                totalDays += daysHeld;
+
+                if (profitPercentage > 0){
+                    wins++;
+                }
+
+                // if the trade is a long, then we add a count to the longs, add the
+                // profit percentage to the profit sum, adds the days and counts the win if
+                // the profit percentage is profitable
+                if (t.getDir() == Direction.LONG){
+                    countLongs++;
+                    profitSum += profitPercentage;
+                    sumDaysLong += daysHeld;
+
+                    if (profitPercentage > 0){
+                        winsLong++;
+                    }
+                    // same thing applies here but if the trade t is short
+                } else if (t.getDir() == Direction.SHORT) {
+                    countShort++;
+                    profitSum += profitPercentage;
+                    sumDaysShort += daysHeld;
+                    if (profitPercentage > 0){
+                        winsShort++;
+                    }
+                }
+
+                int totalCount = trades.size();
+                // now we assign the overall stats for average profit and the like
+                stat.averageProfit = (totalCount > 0 ? profitSum / totalCount : 0.0);
+                // amount of days held over total amount of days
+                stat.averageHoldingPeriod = (totalCount > 0 ? totalDays / totalCount : 0.0);
+                // if total days is greater than zero, then the total sum div days is teh average profit per day
+                stat.averageProfitPerDay = (totalDays > 0 ? profitSum / totalDays : 0.0);
+                // calculates the overall winning pecentage ratio by turing the decimal to
+                // a whole number over the size of the trade
+                stat.winningPercent = (totalCount > 0 ? (wins * 100.00) / totalCount : 0.0);
+
+                // LONG and SHORT specific stats, basically follows the same logic as the pervious ones
+                stat.averageProfitLong = (countLongs > 0 ? profitSumLong / countLongs : 0.0);
+                stat.averageHoldingPeriodLong = (countLongs > 0 ? sumDaysLong / countLongs: 0.0);
+                stat.averageProfitPerDayLong = (sumDaysLong > 0 ? profitSumLong / sumDaysLong : 0);
+                stat.winningPercentLong = (countLongs > 0 ? (winsLong * 100.00) / countLongs : 0.0);
+
+                stat.averageProfitShort = (countShort > 0 ? profitSumShort / countShort : 0.0);
+                stat.averageHoldingPeriodShort = (countShort > 0 ? sumDaysShort / countShort : 0.0);
+                stat.averageProfitPerDayShort = (sumDaysShort > 0 ? profitSumShort / sumDaysShort : 0.0);
+                stat.winningPercentShort = (countShort > 0 ? (winsShort * 100.00) / countShort : 0.0);
             }
+
         }
         //return your object.
         return stat;
