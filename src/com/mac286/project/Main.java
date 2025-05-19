@@ -27,15 +27,20 @@ public class Main {
             //Call run method on the tester
             // get the trades vector getTrades()
             stockTester.run();
+
             Vector<Trade> stockTrades = stockTester.getTrades();
-//            System.out.println(stockTester.getTrades());
-//            System.out.println(stockTrades.get(1).symbol);
+
+
+//            System.out.println(stockTrades.get(1).getHoldingPeriod());
 
 
             //call the helper method computerStates with the trade vector as input
             Statistics stats = Helper.computeStats(stockTrades);
-            //display the results using the toString of the Statistics method
-            System.out.println("--------stats for stocks: risk: " + riskFactor + "-------------");
+            System.out.println(stockTrades.toString());
+
+
+//            display the results using the toString of the Statistics method
+            System.out.println("--------stats for stocks: risk: " + riskFactor[i] + "-------------");
             System.out.println(stats.toString());
             //Change the filename to ETFs.txt and do the same.
 //            fileName = "ETFs.txt";
@@ -49,12 +54,14 @@ public class Main {
 //            System.out.println("--------stats for etfs: risk: " + riskFactor + "-------------");
 ////            System.out.println(stats.toString());
 //
-//            //create a Vector for all trades conbined stocks and etfs
-//            Vector<Trade> mTrades = stockTrades;
+            //create a Vector for all trades conbined stocks and etfs
+            Vector<Trade> mTrades = stockTrades;
 //            mTrades.addAll(etfTrades);
-//            stats = Helper.computeStats(mTrades);
-//            System.out.println("--------stats combined stocks and etfs: risk: " + riskFactor + "-------------");
-//            System.out.println(stats.toString());
+            stats = Helper.computeStats(mTrades);
+            System.out.println("--------stats combined stocks and etfs: risk: " + riskFactor + "-------------");
+            System.out.println(stats.toString());
+            stockTester.reset();
+
         }
     }
 }

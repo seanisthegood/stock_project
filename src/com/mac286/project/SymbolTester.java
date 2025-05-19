@@ -27,7 +27,11 @@ public class SymbolTester {
     public Vector<Trade> getTrades() {
         return mTrades;
     }
-//    public Vector<Bar> getBar() {return mData;}
+
+    public Vector<Bar> getBar() {
+        return mData;
+    }
+
     public void loadData() {
         //create file name
         String fileName = dataPath + mSymbol + "_Daily.csv";
@@ -36,7 +40,7 @@ public class SymbolTester {
             FileReader fr = new FileReader(fileName);
             BufferedReader br = new BufferedReader(fr);
             String line = br.readLine();
-            while((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 //create a bar using the constructor that accepts the data as a String
                 Bar b = new Bar(line);
                 //add the bar to the Vector
@@ -46,7 +50,7 @@ public class SymbolTester {
             loaded = true;
             br.close();
             fr.close();
-        }catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("Something is wrong: " + e.getMessage());
             loaded = false;
             return;
@@ -54,22 +58,23 @@ public class SymbolTester {
     }
 
     private boolean xDaysLow(int ind, int days) {
-        for (int i = ind-1; i > ind-days; i--) {
-            if(mData.elementAt(i).getLow() < mData.elementAt(ind).getLow())
+        for (int i = ind - 1; i > ind - days; i--) {
+            if (mData.elementAt(i).getLow() < mData.elementAt(ind).getLow())
                 return false;
         }
         return true;
     }
+
     private boolean xDaysHigh(int ind, int days) {
-        for (int i = ind-1; i > ind-days; i--) {
-            if(mData.elementAt(i).getHigh() > mData.elementAt(ind).getHigh())
+        for (int i = ind - 1; i > ind - days; i--) {
+            if (mData.elementAt(i).getHigh() > mData.elementAt(ind).getHigh())
                 return false;
         }
         return true;
     }
 
     public boolean test() {
-        if(!loaded) {
+        if (!loaded) {
             loadData();
             if (!loaded) {
                 System.out.println("cannot load data");
@@ -87,40 +92,39 @@ public class SymbolTester {
 
         //TODO: Code your pattern here !!!
 
-        for(int i = 20; i <mData.size()-10; i++) {
-            if(xDaysLow(i, 20)
-                    && mData.elementAt(i).getLow() < mData.elementAt(i-1).getLow()
-                    && mData.elementAt(i).getHigh() > mData.elementAt(i-1).getHigh()
-                    && (mData.elementAt(i).getHigh() - mData.elementAt(i).getClose())/(mData.elementAt(i).range()) < 0.1)
-            {
+        for (int i = 20; i < mData.size() - 10; i++) {
+            if (xDaysLow(i, 20)
+                    && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
+                    && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
+                    && (mData.elementAt(i).getHigh() - mData.elementAt(i).getClose()) / (mData.elementAt(i).range()) < 0.1) {
                 //we have a trade, buy at opne of i+1 (tomorrow) stoploss i.low, target = entry+factor*risk
-                float entryprice = mData.elementAt(i+1).getOpen();
+                float entryprice = mData.elementAt(i + 1).getOpen();
                 Trade T = new Trade();
-                T.open(mSymbol, mData.elementAt(i+1).getDate(), entryprice, mData.elementAt(i+1).getLow(), entryprice*riskFactor, Direction.LONG);
-                T.close(mData.elementAt(i+riskFactor).getDate(), mData.elementAt(i+riskFactor).getClose(), riskFactor);
+                T.open(mSymbol, mData.elementAt(i + 1).getDate(), entryprice, mData.elementAt(i + 1).getLow(), entryprice * riskFactor, Direction.LONG);
+                T.close(mData.elementAt(i + riskFactor).getDate(), mData.elementAt(i + riskFactor).getClose(), riskFactor);
                 //add the trade to the Trade vector
                 mTrades.add(T);
 
                 //Short for reverse trade change low to high, high to low larger to smaller and smaller to larger
-            }else if(xDaysHigh(i, 10)
-                    && mData.elementAt(i).getHigh() > mData.elementAt(i-1).getHigh()
-                    && mData.elementAt(i).getLow() < mData.elementAt(i-1).getLow()
-                    && (mData.elementAt(i).getClose() - mData.elementAt(i).getLow())/(mData.elementAt(i).getHigh() - mData.elementAt(i).getLow()) < 0.1)
-            {
+            } else if (xDaysHigh(i, 20)
+                    && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
+                    && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
+                    && (mData.elementAt(i).getClose() - mData.elementAt(i).getLow()) / (mData.elementAt(i).getHigh() - mData.elementAt(i).getLow()) < 0.1) {
                 //we have a trade, buy at opne of i+1 (tomorrow) stoploss i.low, target = entry+factor*risk
-                float entryprice = mData.elementAt(i+1).getOpen();
-
+                float entryprice = mData.elementAt(i + 1).getOpen();
+//
                 Trade T = new Trade();
-                T.open(mSymbol, mData.elementAt(i+1).getDate(), entryprice, 0, 0, Direction.SHORT);
-//                T.close(mData.elementAt(i+riskFactor).getDate(), mData.elementAt(i+riskFactor).getClose(), riskFactor);
+                T.open(mSymbol, mData.elementAt(i + 1).getDate(), entryprice, 0, 0, Direction.SHORT);
+                T.close(mData.elementAt(i + riskFactor).getDate(), mData.elementAt(i + riskFactor).getClose(), riskFactor);
 //                T.close(mSymbol;mData.elementAt(i+2).getDate(),);
-                //close the trade as in long trade.
-                //add the trade to the Trade vector
+//                //close the trade as in long trade.
+//                //add the trade to the Trade vector
                 mTrades.add(T);
             }
         }
+        System.out.println(mTrades);
 
         return true;
     }
-
 }
+

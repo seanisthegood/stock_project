@@ -60,10 +60,10 @@ public class Tester {
 
             S.test();
 
-//            System.out.println(S.mSymbol);
-//            System.out.println("----");
+            System.out.println(S.mSymbol);
+            System.out.println("----");
 //            System.out.println();
-//            System.out.println(S.mData
+//            System.out.println(S.mData);
 //            System.out.println(mData.size());
 //            System.out.println("---------");
 //            System.out.println("Size Before Get Trades");
@@ -74,6 +74,7 @@ public class Tester {
 //
 //            System.out.println("Size After Get Trades");
 //            System.out.println(mTrades.size());
+
 
         }
 //        System.out.print(S.size());
