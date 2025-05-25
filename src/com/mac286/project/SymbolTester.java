@@ -9,6 +9,7 @@ import java.io.FileWriter;
 
 
 public class SymbolTester {
+    private boolean reverse;
     private int riskFactor; //TODO: Change this to suit your need
     private String mSymbol;
     private String dataPath; //= "C:\Users\oaith\Courses\MAC286\Fall2023\Data\";
@@ -19,13 +20,21 @@ public class SymbolTester {
 
     //Tests one symbol for specific risk factor.
     public SymbolTester(String s, String p, int risk) {
-        riskFactor = risk;
-        mSymbol = s;
-        dataPath = p;
-        mData = new Vector<Bar>(3000, 100);
-        mTrades = new Vector<Trade>(200, 100);
-        loaded = false;
+        this(s, p, risk, false);
     }
+
+    // Full constructor with reverse option
+    public SymbolTester(String s, String p, int risk, boolean reverse) {
+        this.riskFactor = risk;
+        this.mSymbol = s;
+        this.dataPath = p;
+        this.reverse = reverse;
+        this.mData = new Vector<Bar>(3000, 100);
+        this.mTrades = new Vector<Trade>(200, 100);
+        this.loaded = false;
+    }
+
+
 
     public Vector<Trade> getTrades() {
         return mTrades;
@@ -85,49 +94,50 @@ public class SymbolTester {
             }
         }
 
-        //display the first 120 bars
-        /*As an example let's test the following pattern
-         * 1- today makes a 10 days low
-         * 2- today is an outside bar (reversal) today's low is smaller than yesterday's low and today's high is larger than yesterday's high.
-         * 3- today's close near the high (within less than 10%) (high-close)/(high-low)<0.1;
-         * 4- buy at open tomorrow and stop today's low and target factor*risk
-         */
 
-        //TODO: Code your pattern here !!!
+            for (int i = 20; i < mData.size() - 10; i++) {
+                boolean isLongPattern = xDaysLow(i, 20)
+                        && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
+                        && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
+                        && (mData.elementAt(i).getHigh() - mData.elementAt(i).getClose()) / mData.elementAt(i).range() < 0.1;
 
-        for (int i = 20; i < mData.size() - 10; i++) {
-            if (xDaysLow(i, 20)
-                    && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
-                    && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
-                    && (mData.elementAt(i).getHigh() - mData.elementAt(i).getClose()) / (mData.elementAt(i).range()) < 0.1) {
-                //we have a trade, buy at opne of i+1 (tomorrow) stoploss i.low, target = entry+factor*risk
-                float entryprice = mData.elementAt(i + 1).getOpen();
-                Trade T = new Trade();
-                T.open(mSymbol, mData.elementAt(i + 1).getDate(), entryprice, mData.elementAt(i + 1).getLow(), entryprice * riskFactor, Direction.LONG);
-                T.close(mData.elementAt(i + riskFactor).getDate(), mData.elementAt(i + riskFactor).getClose(), riskFactor);
-                //add the trade to the Trade vector
-                mTrades.add(T);
+                boolean isShortPattern = xDaysHigh(i, 20)
+                        && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
+                        && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
+                        && (mData.elementAt(i).getClose() - mData.elementAt(i).getLow()) / mData.elementAt(i).range() < 0.1;
 
-                //Short for reverse trade change low to high, high to low larger to smaller and smaller to larger
-            } else if (xDaysHigh(i, 20)
-                    && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
-                    && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
-                    && (mData.elementAt(i).getClose() - mData.elementAt(i).getLow()) / (mData.elementAt(i).getHigh() - mData.elementAt(i).getLow()) < 0.1) {
-                //we have a trade, buy at opne of i+1 (tomorrow) stoploss i.low, target = entry+factor*risk
-                float entryprice = mData.elementAt(i + 1).getOpen();
-//
-                Trade T = new Trade();
-                T.open(mSymbol, mData.elementAt(i + 1).getDate(), entryprice, 0, 0, Direction.SHORT);
-                T.close(mData.elementAt(i + riskFactor).getDate(), mData.elementAt(i + riskFactor).getClose(), riskFactor);
-//                T.close(mSymbol;mData.elementAt(i+2).getDate(),);
-//                //close the trade as in long trade.
-//                //add the trade to the Trade vector
-                mTrades.add(T);
+                float entryPrice = mData.elementAt(i + 1).getOpen();
+                String entryDate = mData.elementAt(i + 1).getDate();
+                String exitDate = mData.elementAt(i + riskFactor).getDate();
+                float exitPrice = mData.elementAt(i + riskFactor).getClose();
+
+                if (!reverse) {
+                    if (isLongPattern) {
+                        Trade T = new Trade();
+                        T.open(mSymbol, entryDate, entryPrice, mData.elementAt(i + 1).getLow(), entryPrice * riskFactor, Direction.LONG);
+                        T.close(exitDate, exitPrice, riskFactor);
+                        mTrades.add(T);
+                    } else if (isShortPattern) {
+                        Trade T = new Trade();
+                        T.open(mSymbol, entryDate, entryPrice, 0, 0, Direction.SHORT);
+                        T.close(exitDate, exitPrice, riskFactor);
+                        mTrades.add(T);
+                    }
+                } else {
+                    if (isShortPattern) {
+                        Trade T = new Trade();
+                        T.open(mSymbol, entryDate, entryPrice, mData.elementAt(i + 1).getLow(), entryPrice * riskFactor, Direction.LONG);
+                        T.close(exitDate, exitPrice, riskFactor);
+                        mTrades.add(T);
+                    } else if (isLongPattern) {
+                        Trade T = new Trade();
+                        T.open(mSymbol, entryDate, entryPrice, 0, 0, Direction.SHORT);
+                        T.close(exitDate, exitPrice, riskFactor);
+                        mTrades.add(T);
+                    }
+                }
+
             }
-        }
-//        System.out.println(mTrades);
 
-        return true;
-    }
-}
-
+            return true;
+        }}
