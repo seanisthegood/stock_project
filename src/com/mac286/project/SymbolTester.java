@@ -4,14 +4,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
+import java.io.FileWriter;
+
+
 
 public class SymbolTester {
-    public int riskFactor; //TODO: Change this to suit your need
-    public String mSymbol;
-    public String dataPath; //= "C:\Users\oaith\Courses\MAC286\Fall2023\Data\";
+    private int riskFactor; //TODO: Change this to suit your need
+    private String mSymbol;
+    private String dataPath; //= "C:\Users\oaith\Courses\MAC286\Fall2023\Data\";
 
-    public Vector<Bar> mData;
-    public Vector<Trade> mTrades;
+    private Vector<Bar> mData;
+    private Vector<Trade> mTrades;
     private boolean loaded = false;
 
     //Tests one symbol for specific risk factor.
@@ -122,7 +125,7 @@ public class SymbolTester {
                 mTrades.add(T);
             }
         }
-        System.out.println(mTrades);
+//        System.out.println(mTrades);
 
         return true;
     }

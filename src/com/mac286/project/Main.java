@@ -11,7 +11,11 @@ ETFs
 4- Call helper function that will compute all statistics from the vector trades
  */
 public class Main {
+
     public static void main(String[] args) {
+        Vector<Statistics> statsList = new Vector<>();
+        Vector<String> labels = new Vector<>();
+        Vector<Integer> riskLevels = new Vector<>();
         //If you are testing a risk based on stoploss and target
         int[] riskFactor = {1, 2, 3, 5, 10};
         //set path to appropriate path ("C:\ProfOmarMAC286\Spring2025_3076\Data")
@@ -35,33 +39,47 @@ public class Main {
 
 
             //call the helper method computerStates with the trade vector as input
-            Statistics stats = Helper.computeStats(stockTrades);
-            System.out.println(stockTrades.toString());
+            Statistics stockStats = Helper.computeStats(stockTrades);
+//            System.out.println(stockTrades.toString());
 
 
 //            display the results using the toString of the Statistics method
             System.out.println("--------stats for stocks: risk: " + riskFactor[i] + "-------------");
-            System.out.println(stats.toString());
+            System.out.println(stockStats.toString());
             //Change the filename to ETFs.txt and do the same.
-//            fileName = "ETFs.txt";
+            fileName = "ETFs.txt";
 //            //do all exactely the same.
 //            //create a new Tester object for ETFs.
-//            Tester etfTester = new Tester(path, fileName, riskFactor[i]);
+            Tester etfTester = new Tester(path, fileName, riskFactor[i]);
 //            //run the tester
-//            etfTester.run();
-//            Vector<Trade> etfTrades = etfTester.getTrades();
-//            stats = Helper.computeStats(etfTrades);
-//            System.out.println("--------stats for etfs: risk: " + riskFactor + "-------------");
-////            System.out.println(stats.toString());
+            etfTester.run();
+            Vector<Trade> etfTrades = etfTester.getTrades();
+            Statistics etfStats = Helper.computeStats(etfTrades);
+            System.out.println("--------stats for etfs: risk: " + riskFactor[i] + "-------------");
+            System.out.println(etfStats.toString());
 //
             //create a Vector for all trades conbined stocks and etfs
             Vector<Trade> mTrades = stockTrades;
-//            mTrades.addAll(etfTrades);
-            stats = Helper.computeStats(mTrades);
-            System.out.println("--------stats combined stocks and etfs: risk: " + riskFactor + "-------------");
-            System.out.println(stats.toString());
+            mTrades.addAll(etfTrades);
+            Statistics combinedStats = Helper.computeStats(mTrades);
+            System.out.println("--------stats combined stocks and etfs: risk: " + riskFactor[i] + "-------------");
+            System.out.println(combinedStats.toString());
+
+            statsList.add(stockStats);
+            labels.add("stocks");
+            riskLevels.add(riskFactor[i]);
+
+            statsList.add(etfStats);
+            labels.add("etfs");
+            riskLevels.add(riskFactor[i]);
+
+            statsList.add(combinedStats);
+            labels.add("combined");
+            riskLevels.add(riskFactor[i]);
+
             stockTester.reset();
 
         }
+        Helper.exportStatsCSV("stats_output.csv", statsList, labels, riskLevels);
     }
 }

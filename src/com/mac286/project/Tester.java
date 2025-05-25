@@ -18,10 +18,10 @@ is tested.
 if needed.
  */
 public class Tester {
-    public Vector<String> vSymbols;
-    public Vector<Trade> mTrades;
-    public String mPath, mFile;
-    public int mRisk;
+    private Vector<String> vSymbols;
+    private Vector<Trade> mTrades;
+    private String mPath, mFile;
+    private int mRisk;
     public Tester(String path, String file, int risk){
         //set path and file
         mPath = path;
@@ -60,8 +60,8 @@ public class Tester {
 
             S.test();
 
-            System.out.println(S.mSymbol);
-            System.out.println("----");
+//            System.out.println(S.mSymbol);
+//            System.out.println("----");
 //            System.out.println();
 //            System.out.println(S.mData);
 //            System.out.println(mData.size());
@@ -78,7 +78,7 @@ public class Tester {
 
         }
 //        System.out.print(S.size());
-//        System.out.print(mTrades);
+        System.out.print(mTrades.size());
         return true;
     }
     public Vector<Trade> getTrades(){

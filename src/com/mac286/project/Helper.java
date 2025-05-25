@@ -1,10 +1,7 @@
 package com.mac286.project;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Vector;
-import java.io.FileReader;
 
 
 public class Helper {
@@ -70,7 +67,7 @@ public class Helper {
             int countShort = 0; // total amount of shorts trades
 
             // loop through every trade
-            System.out.println(trades.size());
+//            System.out.println(trades.size());
             for (Trade t : trades){
                 double profitPercentage = t.percentPL();
                 double daysHeld = t.getHoldingPeriod();
@@ -136,4 +133,40 @@ public class Helper {
         //return your object.
         return stat;
     }
+    public static void exportStatsCSV(String filePath, Vector<Statistics> statsList,
+                                      Vector<String> labels, Vector<Integer> riskLevels) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+            writer.println("Label,RiskLevel,AvgProfit,AvgHoldDays,ProfitPerDay,WinRate," +
+                    "AvgProfitLong,AvgHoldLong,ProfitPerDayLong,WinRateLong," +
+                    "AvgProfitShort,AvgHoldShort,ProfitPerDayShort,WinRateShort");
+
+            for (int i = 0; i < statsList.size(); i++) {
+                Statistics s = statsList.get(i);
+
+                String row = String.join(",",
+                        labels.get(i),
+                        String.valueOf(riskLevels.get(i)),
+                        String.valueOf(s.averageProfit),
+                        String.valueOf(s.averageHoldingPeriod),
+                        String.valueOf(s.averageProfitPerDay),
+                        String.valueOf(s.winningPercent),
+                        String.valueOf(s.averageProfitLong),
+                        String.valueOf(s.averageHoldingPeriodLong),
+                        String.valueOf(s.averageProfitPerDayLong),
+                        String.valueOf(s.winningPercentLong),
+                        String.valueOf(s.averageProfitShort),
+                        String.valueOf(s.averageHoldingPeriodShort),
+                        String.valueOf(s.averageProfitPerDayShort),
+                        String.valueOf(s.winningPercentShort));
+
+                writer.println(row);
+            }
+
+            System.out.println("✅ Stats exported to: " + filePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
