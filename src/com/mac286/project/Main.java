@@ -46,7 +46,7 @@ public class Main {
 //            display the results using the toString of the Statistics method
             System.out.println("--------stats for stocks: risk: " + riskFactor[i] + "-------------");
             System.out.println(stockStats.toString());
-            //Change the filename to ETFs.txt and do the same.
+            //Change the filename to ETFs.txt an d do the same.
             fileName = "ETFs.txt";
 //            //do all exactely the same.
 //            //create a new Tester object for ETFs.
@@ -80,6 +80,6 @@ public class Main {
             stockTester.reset();
 
         }
-        Helper.exportStatsCSV("stats_output.csv", statsList, labels, riskLevels);
+        Helper.exportStatsCSV("stats_output_reverse.csv", statsList, labels, riskLevels);
     }
 }
