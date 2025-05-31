@@ -80,6 +80,6 @@ public class Main {
             stockTester.reset();
 
         }
-        Helper.exportStatsCSV("stats_output_reverse.csv", statsList, labels, riskLevels);
+        Helper.exportStatsCSV("stats_output_reverse.csv", statsList, labels, riskLevels,true);
     }
 }

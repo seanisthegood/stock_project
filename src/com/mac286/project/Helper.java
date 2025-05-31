@@ -134,7 +134,7 @@ public class Helper {
         return stat;
     }
     public static void exportStatsCSV(String filePath, Vector<Statistics> statsList,
-                                      Vector<String> labels, Vector<Integer> riskLevels) {
+                                      Vector<String> labels, Vector<Integer> riskLevels,boolean reversed) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             writer.println("Label,RiskLevel,AvgProfit,AvgHoldDays,ProfitPerDay,WinRate," +
                     "AvgProfitLong,AvgHoldLong,ProfitPerDayLong,WinRateLong," +
@@ -143,30 +143,50 @@ public class Helper {
             for (int i = 0; i < statsList.size(); i++) {
                 Statistics s = statsList.get(i);
 
-                String row = String.join(",",
-                        labels.get(i),
-                        String.valueOf(riskLevels.get(i)),
-                        String.valueOf(s.averageProfit),
-                        String.valueOf(s.averageHoldingPeriod),
-                        String.valueOf(s.averageProfitPerDay),
-                        String.valueOf(s.winningPercent),
-                        String.valueOf(s.averageProfitLong),
-                        String.valueOf(s.averageHoldingPeriodLong),
-                        String.valueOf(s.averageProfitPerDayLong),
-                        String.valueOf(s.winningPercentLong),
-                        String.valueOf(s.averageProfitShort),
-                        String.valueOf(s.averageHoldingPeriodShort),
-                        String.valueOf(s.averageProfitPerDayShort),
-                        String.valueOf(s.winningPercentShort));
+                String row;
+                if (reversed) {
+                    // Swap long/short stats when reversed
+                    row = String.join(",",
+                            labels.get(i),
+                            String.valueOf(riskLevels.get(i)),
+                            String.valueOf(s.averageProfit),
+                            String.valueOf(s.averageHoldingPeriod),
+                            String.valueOf(s.averageProfitPerDay),
+                            String.valueOf(s.winningPercent),
+                            String.valueOf(s.averageProfitShort),  // SHORT becomes LONG
+                            String.valueOf(s.averageHoldingPeriodShort),
+                            String.valueOf(s.averageProfitPerDayShort),
+                            String.valueOf(s.winningPercentShort),
+                            String.valueOf(s.averageProfitLong),   // LONG becomes SHORT
+                            String.valueOf(s.averageHoldingPeriodLong),
+                            String.valueOf(s.averageProfitPerDayLong),
+                            String.valueOf(s.winningPercentLong));
+                } else {
+                    // Normal export
+                    row = String.join(",",
+                            labels.get(i),
+                            String.valueOf(riskLevels.get(i)),
+                            String.valueOf(s.averageProfit),
+                            String.valueOf(s.averageHoldingPeriod),
+                            String.valueOf(s.averageProfitPerDay),
+                            String.valueOf(s.winningPercent),
+                            String.valueOf(s.averageProfitLong),
+                            String.valueOf(s.averageHoldingPeriodLong),
+                            String.valueOf(s.averageProfitPerDayLong),
+                            String.valueOf(s.winningPercentLong),
+                            String.valueOf(s.averageProfitShort),
+                            String.valueOf(s.averageHoldingPeriodShort),
+                            String.valueOf(s.averageProfitPerDayShort),
+                            String.valueOf(s.winningPercentShort));
+                }
 
                 writer.println(row);
-            }
 
             System.out.println("✅ Stats exported to: " + filePath);
 
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        }catch (IOException e) {
+            e.printStackTrace();
     }
 
-}
+}}
