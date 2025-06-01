@@ -50,7 +50,7 @@ public class Tester {
         for (String Symb: vSymbols) {
 
 
-            SymbolTester S = new SymbolTester(Symb,mPath,mRisk,true);
+            SymbolTester S = new SymbolTester(Symb,mPath,mRisk,false);
 //            System.out.println(S.riskFactor);
 //            System.out.println("------");
 //            System.out.println(Symb);
