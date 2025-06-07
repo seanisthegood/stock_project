@@ -14,6 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         Vector<Statistics> statsList = new Vector<>();
+
         Vector<String> labels = new Vector<>();
         Vector<Integer> riskLevels = new Vector<>();
         //If you are testing a risk based on stoploss and target
@@ -33,6 +34,7 @@ public class Main {
             stockTester.run();
 
             Vector<Trade> stockTrades = stockTester.getTrades();
+            System.out.println("Number of trades generated stocks: " + stockTrades.size());
 
 
 //            System.out.println(stockTrades.get(1).getHoldingPeriod());
@@ -41,11 +43,13 @@ public class Main {
             //call the helper method computerStates with the trade vector as input
             Statistics stockStats = Helper.computeStats(stockTrades);
 //            System.out.println(stockTrades.toString());
+            stockTester.exportTradesToCSV("trades_output_stocks_risk" + riskFactor[i] + ".csv");
+
 
 
 //            display the results using the toString of the Statistics method
             System.out.println("--------stats for stocks: risk: " + riskFactor[i] + "-------------");
-            System.out.println(stockStats.toString());
+//            System.out.print(stockStats.toString());
             //Change the filename to ETFs.txt an d do the same.
             fileName = "ETFs.txt";
 //            //do all exactely the same.
@@ -54,9 +58,13 @@ public class Main {
 //            //run the tester
             etfTester.run();
             Vector<Trade> etfTrades = etfTester.getTrades();
+            System.out.println("Number of trades generated etfs: " + etfTrades.size());
+
+
             Statistics etfStats = Helper.computeStats(etfTrades);
             System.out.println("--------stats for etfs: risk: " + riskFactor[i] + "-------------");
             System.out.println(etfStats.toString());
+            etfTester.exportTradesToCSV("trades_output_etfs_risk" + riskFactor[i] + ".csv");
 //
             //create a Vector for all trades conbined stocks and etfs
             Vector<Trade> mTrades = stockTrades;
@@ -78,8 +86,10 @@ public class Main {
             riskLevels.add(riskFactor[i]);
 
             stockTester.reset();
+            System.out.println(etfTrades.size()+stockTrades.size());
 
         }
-        Helper.exportStatsCSV("stats_output.csv", statsList, labels, riskLevels,false);
+
+        Helper.exportStatsCSV("stats_output_reversed.csv", statsList, labels, riskLevels);
     }
 }

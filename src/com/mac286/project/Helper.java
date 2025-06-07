@@ -14,15 +14,19 @@ public class Helper {
         String fileName = path + "/" + file;
 
         try {
+
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String line = reader.readLine();
+
+//            System.out.println("Read symbol: " + line.trim());
 
             String str;
 
 
             while ((str = reader.readLine()) != null) {
-                V.add(line);
-                line = reader.readLine();
+//                System.out.println("Loaded symbol: " + str);
+                str = str.trim();
+                V.add(str);
+
             }
 //
 
@@ -31,13 +35,16 @@ public class Helper {
             //and add it to the Vector symbols
 
             //return the vector
+            System.out.println("Number of symbols loaded: " + V.size());
             return V;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return V;
+
     }
 
     //Write a Static method that accepts a Vector of Trades and goes
@@ -134,7 +141,7 @@ public class Helper {
         return stat;
     }
     public static void exportStatsCSV(String filePath, Vector<Statistics> statsList,
-                                      Vector<String> labels, Vector<Integer> riskLevels,boolean reversed) {
+                                      Vector<String> labels, Vector<Integer> riskLevels) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             writer.println("Label,RiskLevel,AvgProfit,AvgHoldDays,ProfitPerDay,WinRate," +
                     "AvgProfitLong,AvgHoldLong,ProfitPerDayLong,WinRateLong," +
@@ -144,7 +151,7 @@ public class Helper {
                 Statistics s = statsList.get(i);
 
                 String row;
-                if (reversed) {
+
                     // Swap long/short stats when reversed
                     row = String.join(",",
                             labels.get(i),
@@ -161,28 +168,10 @@ public class Helper {
                             String.valueOf(s.averageHoldingPeriodLong),
                             String.valueOf(s.averageProfitPerDayLong),
                             String.valueOf(s.winningPercentLong));
-                } else {
-                    // Normal export
-                    row = String.join(",",
-                            labels.get(i),
-                            String.valueOf(riskLevels.get(i)),
-                            String.valueOf(s.averageProfit),
-                            String.valueOf(s.averageHoldingPeriod),
-                            String.valueOf(s.averageProfitPerDay),
-                            String.valueOf(s.winningPercent),
-                            String.valueOf(s.averageProfitLong),
-                            String.valueOf(s.averageHoldingPeriodLong),
-                            String.valueOf(s.averageProfitPerDayLong),
-                            String.valueOf(s.winningPercentLong),
-                            String.valueOf(s.averageProfitShort),
-                            String.valueOf(s.averageHoldingPeriodShort),
-                            String.valueOf(s.averageProfitPerDayShort),
-                            String.valueOf(s.winningPercentShort));
-                }
 
                 writer.println(row);
 
-            System.out.println("✅ Stats exported to: " + filePath);
+//            System.out.println("✅ Stats exported to: " + filePath);
 
         }
         }catch (IOException e) {

@@ -20,7 +20,7 @@ public class SymbolTester {
 
     //Tests one symbol for specific risk factor.
     public SymbolTester(String s, String p, int risk) {
-        this(s, p, risk, false);
+        this(s, p, risk, true);
     }
 
     // Full constructor with reverse option
@@ -80,8 +80,12 @@ public class SymbolTester {
     private boolean xDaysHigh(int ind, int days) {
         for (int i = ind - 1; i > ind - days; i--) {
             if (mData.elementAt(i).getHigh() > mData.elementAt(ind).getHigh())
+
                 return false;
         }
+//        System.out.println("Pattern Matched for "+ mSymbol+" @ "+ind);
+//        System.out.println(mData.elementAt(ind));
+
         return true;
     }
 
@@ -97,36 +101,40 @@ public class SymbolTester {
 
             for (int i = 20; i < mData.size() - 10; i++) {
                 boolean isLongPattern = xDaysLow(i, 20)
-                        && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
-                        && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
-                        && (mData.elementAt(i).getHigh() - mData.elementAt(i).getClose()) / mData.elementAt(i).range() < 0.1;
+                        && mData.elementAt(i).getOpen() < mData.elementAt(i - 1).getLow()
+                        && mData.elementAt(i).getClose() > mData.elementAt(i - 1).getClose()
+                        && (mData.elementAt(i-1).getClose() - mData.elementAt(i-1).getLow()) / mData.elementAt(i-1).range() < 0.1;
 
                 boolean isShortPattern = xDaysHigh(i, 20)
-                        && mData.elementAt(i).getHigh() > mData.elementAt(i - 1).getHigh()
-                        && mData.elementAt(i).getLow() < mData.elementAt(i - 1).getLow()
-                        && (mData.elementAt(i).getClose() - mData.elementAt(i).getLow()) / mData.elementAt(i).range() < 0.1;
+                        && mData.elementAt(i).getOpen() > mData.elementAt(i - 1).getHigh()
+                        && mData.elementAt(i).getClose() < mData.elementAt(i - 1).getClose()
+                        && (mData.elementAt(i-1).getHigh() - mData.elementAt(i-1).getClose()) / mData.elementAt(i-1).range() < 0.1;
 
-                float entryPrice = mData.elementAt(i + 1).getOpen();
-                String entryDate = mData.elementAt(i + 1).getDate();
+                float entryPrice = mData.elementAt(i).getClose();
+                String entryDate = mData.elementAt(i).getDate();
                 String exitDate = mData.elementAt(i + riskFactor).getDate();
                 float exitPrice = mData.elementAt(i + riskFactor).getClose();
 
                 if (!reverse) {
                     if (isLongPattern) {
                         Trade T = new Trade();
-                        T.open(mSymbol, entryDate, entryPrice, mData.elementAt(i + 1).getLow(), entryPrice * riskFactor, Direction.LONG);
+                        T.open(mSymbol, entryDate, entryPrice,0, entryPrice * riskFactor, Direction.LONG);
                         T.close(exitDate, exitPrice, riskFactor);
                         mTrades.add(T);
+//                        System.out.println("Trade added on " + entryDate + ": " + T);
+
                     } else if (isShortPattern) {
                         Trade T = new Trade();
                         T.open(mSymbol, entryDate, entryPrice, 0, 0, Direction.SHORT);
                         T.close(exitDate, exitPrice, riskFactor);
                         mTrades.add(T);
+//                        System.out.println("Trade added on " + entryDate + ": " + T);
+
                     }
                 } else {
                     if (isShortPattern) {
                         Trade T = new Trade();
-                        T.open(mSymbol, entryDate, entryPrice, mData.elementAt(i + 1).getLow(), entryPrice * riskFactor, Direction.LONG);
+                        T.open(mSymbol, entryDate, entryPrice, 0, entryPrice * riskFactor, Direction.LONG);
                         T.close(exitDate, exitPrice, riskFactor);
                         mTrades.add(T);
                     } else if (isLongPattern) {

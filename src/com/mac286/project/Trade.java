@@ -54,8 +54,14 @@ public class Trade {
             return 0;
         }
     }
+    @Override
     public String toString() {
-        String st = symbol+ ", " + entryDate + ", " + entryPrice + ", " + stopLoss + ", " + Target + ", " + Dir + ", " + exitDate +", " + exitPrice + ", " + holdingPeriod;
+        String st = symbol + ", " +
+                entryDate + ", $" + entryPrice + ", SL: $" + stopLoss + ", Target: $" + Target + ", " +
+                Dir + ", " +
+                exitDate + ", $" + exitPrice + ", " +
+                holdingPeriod + " days, " +
+                String.format("P/L: %.2f%%", percentPL());
         return st;
     }
     public int getHoldingPeriod() {
@@ -72,6 +78,9 @@ public class Trade {
     }
     public String getExitDate() {
         return exitDate;
+    }
+    public String getSymbol() {
+        return symbol;
     }
     public void setExitDate(String exitDate) {
         this.exitDate = exitDate;
